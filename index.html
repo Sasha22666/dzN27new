@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Valid_form</title>
+    <style>
+        div label {
+            float: left;
+        }
+
+        .messError {
+            color: red;
+            margin-left: 150px;
+        }
+
+        div.inp_text input {
+            width: 800px;
+        }
+
+        div.inp_adres input {
+            width: 500px;
+        }
+
+        div.inp_number input {
+            width: 200px;
+        }
+
+        .invalid {
+            border-color: red;
+        }
+
+        #error {
+            color: red
+        }
+
+
+        textarea {
+            height: 30px;
+            width: 960px;
+            resize: none;
+        }
+
+        label {
+            width: 150px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <form id=valid_forma action="https://fe.it-academy.by/TestForm.php" method="post" name="validForm">
+
+        <div>
+            <label for="razrabotchiki">Разработчики:</label>
+            <div class="inp_text"><input type="text" name="razrabotchiki"></div>
+
+            <label for="nameSait">Название сайта:</label>
+            <div class="inp_text"><input type="text" name="nameSait"></div>
+
+            <label for="urlSait">URL сайта:</label>
+            <div class="inp_adres"><input type="text" name="urlSait"></div>
+
+            <label for="dataSait">Дата запуска сайта:</label>
+            <div class="inp_number"><input type="date" name="dataSait"></div>
+
+            <label for="posetiteli">Посетителей в сутки:</label>
+            <div class="inp_number"><input type="number" name="posetiteli"></div>
+
+            <label for="emailSait">E-mail для связи:</label>
+            <div class="inp_adres"><input type="email" name="emailSait"></div>
+
+            <label for="rubrika">Рубрика каталога:</label>
+            <div class="sel_rubrika">
+                <select name="rubrika">
+                    <option value="0">-не выбрано-</option>
+                    <option value="1">бытовая техника</option>
+                    <option value="2">автомобили</option>
+                    <option value="3">история</option>
+                    <option value="4">кулинария</option>
+                </select>
+            </div>
+
+
+            <div class="inp_razm" id='pole_razmeshchenie'>
+                <label for="razmeshchenie">Размещение:</label>
+                <input type="radio" name="razmeshchenie" value="1" id="radio1">бесплатное
+                <input type="radio" name="razmeshchenie" value="2" id="radio2">платное
+                <input type="radio" name="razmeshchenie" value="3" id="radio3">VIP
+            </div>
+
+            <label for="agree">Разрешить отзывы:</label>
+            <div class="inp_check">
+                <input type="checkbox" name="agree">
+            </div>
+        </div>
+
+        <div class="area_opisanie" id='pole_opisanie'>
+            <label for="opisanie" id="area">Описание сайта:</label><br>
+            <textarea name="opisanie"></textarea>
+        </div>
+
+        <!--  кнопка публикации -->
+        <button type="submit">Опубликовать</button>
+    </form>
+
+    <script>
+        "use strict";
+        const form = document.forms.validForm;
+
+        form.elements.razrabotchiki.addEventListener("blur", validationText);
+        form.elements.nameSait.addEventListener("blur", validationText);
+        form.elements.urlSait.addEventListener("blur", validationText);
+        form.elements.dataSait.addEventListener("blur", validationDate);
+        form.elements.posetiteli.addEventListener("blur", validationNumber);
+        form.elements.emailSait.addEventListener("blur", validationText);
+        form.elements.rubrika.addEventListener("blur", validationCombi);
+
+        const razmeshchenieRadios = form.elements.razmeshchenie;
+        for (let i = razmeshchenieRadios.length - 1; i >= 0; i--) {
+            let razmeshchenieRadio = razmeshchenieRadios[i];
+            razmeshchenieRadio.addEventListener('blur', validationRadio);
+            razmeshchenieRadio.addEventListener('change', validationRadio);
+        };
+
+        form.elements.agree.addEventListener("blur", validationCheckBox);
+        form.elements.opisanie.addEventListener("blur", validationText);
+
+        function validationText(EO) {
+            EO = EO || window.event;
+            const input = EO.currentTarget;
+            const parentDiv = input.parentNode;
+            let enterText = input.value.trim();
+
+            if ((enterText === "") & (parentDiv.querySelector(".messError") == null)) {
+                let messError = document.createElement('div')
+                messError.classList.add("messError")
+                let text = document.createTextNode('Данное поле не может быть пустым!')
+                messError.appendChild(text);
+                parentDiv.appendChild(messError);
+            } else {
+                if ((enterText === "") & (parentDiv.querySelector(".messError") != null)) {
+                } else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+
+        }
+
+        function validationDate(EO) {
+            EO = EO || window.event;
+            const input = EO.currentTarget;
+            const parentDiv = input.parentNode;
+            let enterDate = input.value;
+
+            if ((enterDate === "") & (parentDiv.querySelector(".messError") == null)) {
+                let alert = document.createElement('div')
+                alert.classList.add("messError")
+                let text = document.createTextNode('Введите корректную дату!')
+                alert.appendChild(text);
+                parentDiv.appendChild(alert);
+            } else {
+                if ((enterDate === "") & (parentDiv.querySelector(".messError") != null)) { }
+                else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+        }
+
+        function validationNumber(EO) {
+            EO = EO || window.event;
+            const input = EO.currentTarget;
+            const parentDiv = input.parentNode;
+            let enterNumber = input.value;
+
+            if ((enterNumber <= 0) & (parentDiv.querySelector(".messError") == null)) {
+                let alert = document.createElement('div')
+                alert.classList.add("messError")
+                let text = document.createTextNode('Введите корректное число!')
+                alert.appendChild(text);
+                parentDiv.appendChild(alert);
+            } else {
+                if ((enterNumber <= 0) & (parentDiv.querySelector(".messError") != null)) { }
+                else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+        }
+
+        function validationCombi(EO) {
+            EO = EO || window.event;
+            const input = EO.currentTarget;
+            const parentDiv = input.parentNode;
+            let enterCombi = input.value;
+
+            if ((enterCombi === "0") & (parentDiv.querySelector(".messError") == null)) {
+                let alert = document.createElement('div')
+                alert.classList.add("messError")
+                let text = document.createTextNode('Выберите рубрику!')
+                alert.appendChild(text);
+                parentDiv.appendChild(alert);
+            } else {
+                if ((enterCombi === "0") & (parentDiv.querySelector(".messError") != null)) { }
+                else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+        }
+
+        function validationRadio(EO) {
+
+            EO = EO || window.event;
+
+            const enterRadio1 = EO.currentTarget.parentNode.children.radio1;
+            const enterRadio2 = EO.currentTarget.parentNode.children.radio2;
+            const enterRadio3 = EO.currentTarget.parentNode.children.radio3;
+
+            const parentDiv = document.getElementById("pole_razmeshchenie");
+
+            if ((!enterRadio1.checked) & (!enterRadio2.checked) & (!enterRadio3.checked) & (parentDiv.querySelector(".messError") == null)) {
+                let alert = document.createElement('div')
+                alert.classList.add("messError")
+                let text = document.createTextNode('Выберите тип размещения!')
+                alert.appendChild(text);
+                parentDiv.appendChild(alert);
+            } else {
+                if ((!enterRadio1.checked) & (!enterRadio2.checked) & (!enterRadio3.checked) & (parentDiv.querySelector(".messError") != null)) {
+                } else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+        }
+
+        function validationCheckBox(EO) {
+            EO = EO || window.event;
+            const checkBox = EO.currentTarget;
+            const parentDiv = checkBox.parentNode;
+            const enterChecBox = checkBox.checked;
+
+
+            if ((!enterChecBox) & (parentDiv.querySelector(".messError") == null)) {
+                let alert = document.createElement('div')
+                alert.classList.add("messError")
+                let text = document.createTextNode('Необходимо разрешить отзывы!')
+                alert.appendChild(text);
+                parentDiv.appendChild(alert);
+            } else {
+                if ((!enterChecBox) & (parentDiv.querySelector(".messError") != null)) {
+                } else {
+                    if (parentDiv.querySelector(".messError") != null) {
+                        parentDiv.lastChild.remove();
+                    }
+                }
+            }
+        }
+        form.addEventListener('submit', validationForm, false)
+
+        function validationForm(EO) {
+            EO = EO || window.event;
+
+
+            for (const formElement of EO.currentTarget.elements) {
+                if ((formElement.name === 'razrabotchiki') || (formElement.name === "nameSait") || (formElement.name === "urlSait") || (formElement.name === "emailSait") || (formElement.name === 'opisanie')) {
+                    validationText({ currentTarget: formElement })
+                }
+                if (formElement.name === 'dataSait') {
+                    validationDate({ currentTarget: formElement })
+                }
+                if (formElement.name === 'posetiteli') {
+                    validationNumber({ currentTarget: formElement })
+                }
+                if (formElement.name === 'rubrika') {
+                    validationCombi({ currentTarget: formElement })
+                }
+                if (formElement.name === 'razmeshchenie') {
+                    validationRadio({ currentTarget: formElement })
+                }
+                if (formElement.name === 'agree') {
+                    validationCheckBox({ currentTarget: formElement })
+                }
+            }
+
+            let elFocus = document.querySelector(".messError").previousElementSibling;
+            if ((elFocus.type === "radio") || (elFocus.type === "chekbox")) {
+                EO.preventDefault();
+                elFocus.scrollIntoView();
+            } else {
+                elFocus.focus(); EO.preventDefault();
+
+            }
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
